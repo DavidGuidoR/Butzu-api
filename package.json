@@ -1,0 +1,29 @@
+{
+  "name": "butzu-api",
+  "version": "1.0.0",
+  "description": "API REST by the mobile Butzu app",
+  "main": "app.js",
+  "scripts": {
+    "test": "npx mocha \"tests/**/*.test.js\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DavidGuidoR/Butzu-api.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DavidGuidoR/Butzu-api/issues"
+  },
+  "homepage": "https://github.com/DavidGuidoR/Butzu-api#readme",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "express": "^4.18.3",
+    "passport-jwt": "^4.0.1"
+  },
+  "devDependencies": {
+    "chai": "^5.1.0",
+    "chai-http": "^4.4.0",
+    "mocha": "^10.3.0"
+  }
+}
