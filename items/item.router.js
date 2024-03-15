@@ -17,7 +17,6 @@ router.get('/tag', (req, res) => {
   Item.find({}, 'tag')
     .then(tags => {
       res.send(tags);
-      console.log(tags);
     })
     .catch(err => {
       console.error('Error al consultar tags:', err);

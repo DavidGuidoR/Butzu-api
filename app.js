@@ -1,5 +1,7 @@
 const express = require('express');
 const bodyParser =require('body-parser');
+const Negocio = require('./database/models.js').Negocio;
+
 
 //base de datos
 require('./database/database');
@@ -18,7 +20,17 @@ const port = 3000;
 
 //ruta por default
 app.get('/', (req,res) => {
-    res.status(200).send('Hola desde el servidor')
+    Negocio.find({}, 'business_name description photo tag')
+    .then(neg => {
+        if (neg.length === 0) {
+            res.send('Aun no existen negocios creados.');
+        } else {
+            res.send(neg);
+        }
+    })
+    .catch(err => {
+      console.error('Error al consultar negocios:', err);
+    });
 })
 
 //Uso de rutas
