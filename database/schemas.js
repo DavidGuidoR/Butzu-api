@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 const {Schema, model} = mongoose;
 
 // Creación de esquemas
@@ -61,4 +61,4 @@ const itemSchema = new Schema ({
     photo: String, 
 });
 
-module.exports = { userSchema, negocioSchema, addressSchema, itemSchema };
+export { userSchema, negocioSchema, addressSchema, itemSchema };

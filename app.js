@@ -1,13 +1,17 @@
-const express = require('express');
-const bodyParser =require('body-parser');
+import express from 'express';
+import bodyParser from 'body-parser';
+
+//variables entorno
+import dotenv from 'dotenv';
+dotenv.config();
 
 //base de datos
-require('./database/database');
+import './database/database.js';
 
 // Declaración de rutas.
-const authRoutes =  require('./auth/auth.router');
-const itemroutes = require('./items/item.router');
-const negocio = require('./negocio/negocio.router');
+import authRoutes from './auth/auth.router.js';
+import itemRoutes from './items/item.router.js';
+import negocioRoutes from './negocio/negocio.router.js';
 
 // Manejo aplicación y formato de comunicación.
 const app = express();
@@ -23,12 +27,14 @@ app.get('/', (req,res) => {
 
 //Uso de rutas
 app.use('/auth', authRoutes);
-app.use('/items', itemroutes);
-app.use('/negocio', negocio);
+app.use('/items', itemRoutes);
+app.use('/negocio', negocioRoutes);
 
 // Mensaje de puerto encendido
 app.listen(port, () => {
     console.log('Server started at port 3000')
 });
 
-exports.app = app;
+export default app;
+
+

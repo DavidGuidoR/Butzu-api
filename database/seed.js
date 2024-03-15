@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
-const { User, Negocio, Address, Item } = require('./models');
-require('./database'); // Esto conectará tu aplicación a MongoDB según lo definido en `database.js`.
+import mongoose from 'mongoose';
+import { User, Negocio, Address, Item } from './models.js';
+import './database.js';
 
 async function createSeedData() {
   try {
@@ -25,6 +25,8 @@ async function createSeedData() {
       description: "Una acogedora cafetería en el corazón de la ciudad.",
       photo: "ruta/a/la/foto/negocio.jpg",
       tag: "cafetería",
+      banner:"ruta/a/la/foto/banner.jpg",
+      background_photo:"ruta/a/la/foto/background.jpg",
       color_top: "#000000",
       tag_color: "#ffffff",
       tag_font: "Roboto",

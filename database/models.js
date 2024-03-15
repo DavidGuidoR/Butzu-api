@@ -1,10 +1,11 @@
 // models.js
-const mongoose = require('mongoose');
-const { userSchema, negocioSchema, addressSchema, itemSchema } = require('./schemas');
+import mongoose from 'mongoose';
+import { userSchema, negocioSchema, addressSchema, itemSchema } from './schemas.js';
 
 const User = mongoose.model('User', userSchema);
 const Negocio = mongoose.model('Negocio', negocioSchema);
 const Address = mongoose.model('Address', addressSchema);
 const Item = mongoose.model('Item', itemSchema);
 
-module.exports = { User, Negocio, Address, Item };
+export { User, Negocio, Address, Item };
+
