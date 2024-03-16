@@ -1,6 +1,7 @@
 import express from 'express';
 import multer from 'multer';
 import uploadFileToS3 from '../config/multerUpload.js';
+import { generatePDF } from './pdfController.js';
 import { request } from 'http';
 const storage = multer.memoryStorage();
 const router = express.Router();
@@ -36,6 +37,8 @@ router.post('/upload', upload, async (req, res) => {
     res.status(500).json({ error: "Error interno del servidor." });
   }
 });
+
+router.get('/pdf/:negocioId', generatePDF);
 
 
   export default router;
