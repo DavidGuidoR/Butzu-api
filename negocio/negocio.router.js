@@ -1,13 +1,21 @@
 import express from 'express';
 import multer from 'multer';
 import uploadFileToS3 from '../config/multerUpload.js';
-import { request } from 'http';
-const storage = multer.memoryStorage();
+import NegocioValidations from'./validaciones.negocio.js';
+import createNegocio from './negocio.controller.js';
+import verificarToken from '../auth/auth.middleware.js';
 const router = express.Router();
+
+const imagesCreate = multer({ storage: multer.memoryStorage() }).fields([
+  { name: 'images', maxCount: 3 },]);
 
 router.get('/', (req, res) => {
     res.send('Esta es una ruta de ejemplo negocio.');
   });
+
+//imagesCreate maneja las imágenes recibidas, verificar token la autenticación, negociovalidations que el formato de campos sea correcto y createNegocio es el controller destino 
+router.post('/create',imagesCreate, verificarToken, NegocioValidations, createNegocio);
+
 
 // Configura multer para manejar diferentes campos en la misma ruta
 const upload = multer({ storage: multer.memoryStorage() }).fields([
