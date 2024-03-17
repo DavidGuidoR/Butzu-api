@@ -1,7 +1,7 @@
 // pdfController.js
 import PDFDocument from 'pdfkit';
 import fs from 'fs';
-import { Negocio } from './models.js'; // Asume que tienes un modelo de negocio definido
+import { Negocio } from '../database/models.js'; // Asume que tienes un modelo de negocio definido
 
 export const generatePDF = async (req, res) => {
   try {

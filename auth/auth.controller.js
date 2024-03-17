@@ -1,7 +1,7 @@
 // authController.js
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
-import { User } from './models.js'; // Asume que tienes un modelo de usuario definido
+import { User } from '../database/models.js'; // Asume que tienes un modelo de usuario definido
 
 export const authenticateUser = async (req, res) => {
   try {
@@ -40,3 +40,5 @@ export const authenticateUser = async (req, res) => {
     res.status(500).json({ message: 'Error en la autenticación' });
   }
 };
+
+export default authenticateUser

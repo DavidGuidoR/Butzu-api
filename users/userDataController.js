@@ -1,6 +1,6 @@
 // userDataController.js
-import { User } from './models.js'; // Asume que tienes un modelo de usuario definido
-import { Negocio } from './models.js'; // Asume que tienes un modelo de negocio definido
+import { User } from '../database/models.js'; // Asume que tienes un modelo de usuario definido
+import { Negocio } from '../database/models.js'; // Asume que tienes un modelo de negocio definido
 
 export const getUserData = async (userId) => {
   try {

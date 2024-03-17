@@ -2,8 +2,7 @@ import express from 'express';
 import multer from 'multer';
 import bcrypt from 'bcrypt';
 import { getUserData } from './userDataController.js';
-
-console.log("Hola");
+import { User } from '../database/models.js'; // Asume que tienes un modelo de usuario definido
 
 // Endpoint para crear un nuevo usuario
 export const createUser = async (req, res) => {
