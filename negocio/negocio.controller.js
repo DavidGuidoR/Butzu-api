@@ -43,7 +43,7 @@ export const createNegocio  = async(req, res) => {
     try {
     // Crear y guardar el documento Negocio
     const newNegocio = new Negocio({
-        userId, business_name, description, photo, tag, banner, background_photo, color_top, tag_color, tag_font, item_font
+        user_id: userId, business_name, description, photo, tag, banner, background_photo, color_top, tag_color, tag_font, item_font
     });
 
     const negocioSaved = await newNegocio.save();
@@ -65,4 +65,32 @@ export const createNegocio  = async(req, res) => {
         
 };
 
-export default createNegocio;
+export const getUserNegocios = async (req,res) => {
+    let userId = req.params.userId;
+    userId = new mongoose.Types.ObjectId(userId);
+
+  try {
+    // Primero, obtenemos los negocios asociados al usuario
+    const negocios = await Negocio.find({ user_id: userId });
+
+    // Luego, para cada negocio, obtenemos sus direcciones
+    const negociosConDirecciones = await Promise.all(negocios.map(async negocio => {
+      const direcciones = await Address.find({ negocio_id: negocio._id });
+      return {
+        ...negocio.toObject(),
+        direcciones
+      };
+    }));
+
+    if (negocios.length === 0) {
+        return res.status(404).json({ message: "No ha creado aun un negocio" });
+    } else {
+    res.json(negociosConDirecciones);
+    }
+  } catch (error) {
+    console.error("Error al obtener negocios y direcciones", error);
+    res.status(500).send("Error al obtener negocios y direcciones");
+  }
+};
+
+export default {createNegocio, getUserNegocios};
