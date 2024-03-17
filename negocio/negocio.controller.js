@@ -93,4 +93,45 @@ export const getUserNegocios = async (req,res) => {
   }
 };
 
-export default {createNegocio, getUserNegocios};
+export const editNegocioUser = async (req,res) => {
+    let negocioId
+    negocioId = req.params.negocioId
+    const modificaciones = req.body;
+    let images = req.files;
+    let metadata = JSON.parse(req.body.metadata || '{}');
+    const profileImage = req.files[metadata.profileImage] ? req.files[metadata.profileImage][0] : null;
+    const bannerImage = req.files[metadata.bannerImage] ? req.files[metadata.bannerImage][0] : null;
+    const backgroundImage = req.files[metadata.backgroundImage] ? req.files[metadata.backgroundImage][0] : null;
+
+
+    try {
+        negocio = await Negocio.findById(negocioId);
+
+        if (!negocio) {
+            return res.status(404).send({ message: "Negocio no encontrado" });
+          }
+            if(metadata){
+            images.forEach(image => {
+                if (image.originalname === metadatos.profileImage) {
+                perfil = image;
+                } else if (image.originalname === metadatos.bannerImage) {
+                banner = image;
+                } else if (image.originalname === metadatos.backgroundImage) {
+                fondo = image;
+                }
+            });
+        }
+            
+        // Object.keys(updates).forEach((update) => {
+        // negocio[update] = updates[update];
+        // });
+
+        // await negocio.save();
+        // res.send(negocio);
+
+    } catch (error) {
+        res.status(500).send("Ah ocurrido un error inesperado")
+    }
+}
+
+export default {createNegocio, getUserNegocios, editNegocioUser};

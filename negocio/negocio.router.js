@@ -4,7 +4,10 @@ import uploadFileToS3 from '../config/multerUpload.js';
 import NegocioValidations from'./validaciones.negocio.js';
 import {createNegocio} from './negocio.controller.js';
 import {getUserNegocios} from './negocio.controller.js'
+import {editNegocioUser} from './negocio.controller.js'
 import verificarToken from '../auth/auth.middleware.js';
+import { Upload } from '@aws-sdk/lib-storage';
+import deleteImageFromS3 from '../config/deleteUpload.js';
 const router = express.Router();
 
 const imagesCreate = multer({ storage: multer.memoryStorage() }).fields([
@@ -18,6 +21,8 @@ router.get('/', (req, res) => {
 router.post('/create',imagesCreate, verificarToken, NegocioValidations, createNegocio);
 
 router.get('/user/:userId',verificarToken, getUserNegocios);
+
+router.patch('/edit/:negocioId',imagesCreate,verificarToken,editNegocioUser);
 
 // Configura multer para manejar diferentes campos en la misma ruta
 const upload = multer({ storage: multer.memoryStorage() }).fields([
@@ -46,6 +51,15 @@ router.post('/upload', upload, async (req, res) => {
     res.status(500).json({ error: "Error interno del servidor." });
   }
 });
+
+router.post('/deleteUpload', upload, async (req,res) => {
+  const url = req.body.referencia;
+  const bucketUrl = "https://butzuimages.s3.amazonaws.com/";
+  const key = url.replace(bucketUrl, ""); // Esto eliminará la parte del URL del bucket, dejando solo la clave del objeto
+  
+    deleteImageFromS3(key);
+    res.status(200).json('Solicitud realizada con exito');
+} );
 
 
   export default router;
