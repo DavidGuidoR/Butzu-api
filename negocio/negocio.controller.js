@@ -1,8 +1,9 @@
 import {mongoose} from "mongoose";
-import {validationResult} from "express-validator"
-import uploadFileToS3 from "../config/multerUpload.js";
+import {validationResult} from "express-validator";
 import {Negocio} from '../database/models.js'; // Asegúrate de que la ruta de importación es correcta
 import {Address} from '../database/models.js';
+import deleteImageFromS3 from '../config/deleteUpload.js';
+import uploadFileToS3 from '../config/multerUpload.js';
 
 export const createNegocio  = async(req, res) => {
     let photo = '';
@@ -94,43 +95,60 @@ export const getUserNegocios = async (req,res) => {
 };
 
 export const editNegocioUser = async (req,res) => {
-    let negocioId
-    negocioId = req.params.negocioId
+    let negocioId;
+    negocioId = new mongoose.Types.ObjectId(req.params.negocioId);
     const modificaciones = req.body;
-    let images = req.files;
+    let images = req.files.images;
+    console.log(images);
     let metadata = JSON.parse(req.body.metadata || '{}');
-    const profileImage = req.files[metadata.profileImage] ? req.files[metadata.profileImage][0] : null;
-    const bannerImage = req.files[metadata.bannerImage] ? req.files[metadata.bannerImage][0] : null;
-    const backgroundImage = req.files[metadata.backgroundImage] ? req.files[metadata.backgroundImage][0] : null;
-
+    const folderName = 'negocio';
+    console.log('Antes de las modificaciones');
+    console.log(modificaciones);
 
     try {
-        negocio = await Negocio.findById(negocioId);
-
+        const negocio = await Negocio.findById(negocioId);
         if (!negocio) {
             return res.status(404).send({ message: "Negocio no encontrado" });
           }
             if(metadata){
-            images.forEach(image => {
-                if (image.originalname === metadatos.profileImage) {
-                perfil = image;
-                } else if (image.originalname === metadatos.bannerImage) {
-                banner = image;
-                } else if (image.originalname === metadatos.backgroundImage) {
-                fondo = image;
-                }
-            });
-        }
-            
-        // Object.keys(updates).forEach((update) => {
-        // negocio[update] = updates[update];
-        // });
+                for (const image of images) {
+                if (image.originalname === metadata.profileImage) {
+                    let photo = image;
+                    let photoAnt = negocio.photo;
+                    deleteImageFromS3(photoAnt);
+                    photo = await uploadFileToS3(image.buffer, image.originalname, image.mimetype, folderName);
+                    modificaciones.photo = photo;
 
-        // await negocio.save();
-        // res.send(negocio);
+                } else if (image.originalname === metadata.bannerImage) {
+                    let banner = image;
+                    let bannerAnt = negocio.banner;
+                    deleteImageFromS3(bannerAnt);
+                    banner = await uploadFileToS3(image.buffer, image.originalname, image.mimetype, folderName);
+                    modificaciones.banner = banner;
+
+                } else if (image.originalname === metadata.backgroundImage) {
+                    let background_photo = image;
+                    let background_photoAnt = negocio.background_photo;
+                    deleteImageFromS3(background_photoAnt);
+                    background_photo = await uploadFileToS3(image.buffer, image.originalname, image.mimetype, folderName);
+                    modificaciones.background_photo = background_photo;
+
+                }
+            };
+                delete modificaciones.metadata;
+            }
+        
+            console.log(modificaciones);
+        Object.keys(modificaciones).forEach((modificacion) => {
+        negocio[modificacion] = modificaciones[modificacion];
+        });
+
+        await negocio.save();
+        res.send(negocio);
 
     } catch (error) {
         res.status(500).send("Ah ocurrido un error inesperado")
+        console.log(error);
     }
 }
 
