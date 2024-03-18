@@ -38,6 +38,7 @@ app.use('/auth', authRoutes);
 app.use('/items', itemroutes);
 app.use('/negocio', negocio);
 
+
 // Mensaje de puerto encendido
 app.listen(port, () => {
     console.log('Server started at port 3000')
