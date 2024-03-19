@@ -1,7 +1,6 @@
 import express from 'express';
+import {Item} from '../database/models.js';
 const router = express.Router();
-const Item = require('../database/models.js').Item;
-
 
 router.use((req, res, next) => {
   res.setHeader('Content-Security-Policy', 'default-src \'self\'; img-src *');
