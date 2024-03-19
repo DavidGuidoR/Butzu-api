@@ -1,5 +1,6 @@
 import express from 'express';
 import bodyParser from 'body-parser';
+import { Negocio } from './database/models.js';
 
 //variables entorno
 import dotenv from 'dotenv';
@@ -22,13 +23,24 @@ const port = 3000;
 
 //ruta por default
 app.get('/', (req,res) => {
-    res.status(200).send('Hola desde el servidor')
+    Negocio.find({}, 'business_name description photo tag')
+    .then(neg => {
+        if (neg.length === 0) {
+            res.send('Aun no existen negocios creados.');
+        } else {
+            res.send(neg);
+        }
+    })
+    .catch(err => {
+      console.error('Error al consultar negocios:', err);
+    });
 })
 
 //Uso de rutas
 app.use('/auth', authRoutes);
 app.use('/items', itemRoutes);
 app.use('/negocio', negocioRoutes);
+
 
 // Mensaje de puerto encendido
 app.listen(port, () => {

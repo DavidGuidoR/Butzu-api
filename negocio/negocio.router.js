@@ -1,3 +1,4 @@
+
 import express from 'express';
 import multer from 'multer';
 import uploadFileToS3 from '../config/multerUpload.js';
@@ -8,6 +9,7 @@ import {editNegocioUser} from './negocio.controller.js'
 import verificarToken from '../auth/auth.middleware.js';
 import { Upload } from '@aws-sdk/lib-storage';
 import deleteImageFromS3 from '../config/deleteUpload.js';
+import qr from 'qrcode';
 const router = express.Router();
 
 const imagesCreate = multer({ storage: multer.memoryStorage() }).fields([
@@ -62,4 +64,37 @@ router.post('/deleteUpload', upload, async (req,res) => {
 } );
 
 
-  export default router;
+//Esta ruta es para generar el QR 
+router.get("/qr/:negocioId", (req, res) => {
+
+  const configQr = {
+    type: "png", // Tipo de archivo de imagen (png, svg, ...)
+    quality: 0.9, // Calidad de la imagen (valor entre 0 y 1)
+    margin: 1, // Margen alrededor del código QR
+    color: {
+      // Colores del código QR
+      dark: "#000", // Color oscurUwU
+      light: "#fff", // Color clarOwO
+    },
+  };
+
+  const negocioId = req.params.negocioId; //Aqui obtengo el ID del negociOwO
+
+  qr.toBuffer(negocioId, configQr, (err, buffer) => {
+    if (err) {
+      console.error("Error al generar el código QR:", err);
+      return;
+    }
+     res.set('Content-Type', 'image/png');
+     res.send(buffer);
+  });
+});
+
+//Y esta ruta es para generar los links 
+router.get("/link/:negocioId", (req, res) => {
+  const negocioId = req.params.negocioId; //Aqui obtengo el ID del negociOwO
+  const enlace = `http://localhost:3000/negocio/${negocioId}`; //modificar el link despois 
+  res.send(enlace);
+});
+
+export default router;

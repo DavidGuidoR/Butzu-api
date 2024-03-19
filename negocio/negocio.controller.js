@@ -99,11 +99,8 @@ export const editNegocioUser = async (req,res) => {
     negocioId = new mongoose.Types.ObjectId(req.params.negocioId);
     const modificaciones = req.body;
     let images = req.files.images;
-    console.log(images);
-    let metadata = JSON.parse(req.body.metadata || '{}');
+    let metadata = JSON.parse(req.body.metadata || null);
     const folderName = 'negocio';
-    console.log('Antes de las modificaciones');
-    console.log(modificaciones);
 
     try {
         const negocio = await Negocio.findById(negocioId);
@@ -114,22 +111,31 @@ export const editNegocioUser = async (req,res) => {
                 for (const image of images) {
                 if (image.originalname === metadata.profileImage) {
                     let photo = image;
-                    let photoAnt = negocio.photo;
-                    deleteImageFromS3(photoAnt);
+                    let url = negocio.photo;
+                    const bucketUrl = "https://butzuimages.s3.amazonaws.com/";
+                    const key = url.replace(bucketUrl, ""); // Esto eliminará la parte del URL del bucket, dejando solo la clave del objeto
+                    
+                    deleteImageFromS3(key);
                     photo = await uploadFileToS3(image.buffer, image.originalname, image.mimetype, folderName);
                     modificaciones.photo = photo;
 
                 } else if (image.originalname === metadata.bannerImage) {
                     let banner = image;
-                    let bannerAnt = negocio.banner;
-                    deleteImageFromS3(bannerAnt);
+                    let url = negocio.banner;
+                    const bucketUrl = "https://butzuimages.s3.amazonaws.com/";
+                    const key = url.replace(bucketUrl, ""); // Esto eliminará la parte del URL del bucket, dejando solo la clave del objeto
+                    
+                    deleteImageFromS3(key);
                     banner = await uploadFileToS3(image.buffer, image.originalname, image.mimetype, folderName);
                     modificaciones.banner = banner;
 
                 } else if (image.originalname === metadata.backgroundImage) {
                     let background_photo = image;
-                    let background_photoAnt = negocio.background_photo;
-                    deleteImageFromS3(background_photoAnt);
+                    let url = negocio.background_photo;
+                    const bucketUrl = "https://butzuimages.s3.amazonaws.com/";
+                    const key = url.replace(bucketUrl, ""); // Esto eliminará la parte del URL del bucket, dejando solo la clave del objeto
+                    
+                    deleteImageFromS3(key);
                     background_photo = await uploadFileToS3(image.buffer, image.originalname, image.mimetype, folderName);
                     modificaciones.background_photo = background_photo;
 
