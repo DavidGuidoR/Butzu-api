@@ -1,17 +1,25 @@
 import express from 'express'
 import multer from 'multer'
-import uploadFileToS3 from '../config/multerUpload.js'
+import { createItem, deleteItem, editItem, getItem } from './item.controller.js'
 import verificarToken from '../auth/auth.middleware.js'
-import { Upload } from '@aws-sdk/lib-storage'
-import deleteImageFromS3 from '../config/deleteUpload.js'
-import { createItem } from './item.controller.js'
 
 const router = express.Router()
 
-const imagesCreate = multer({ storage: multer.memoryStorage() }).fields([
-  { name: 'images', maxCount: 1 },
+// Configura multer para manejar la carga de imágenes
+const imagesUpload = multer({ storage: multer.memoryStorage() }).fields([
+  { name: 'images', maxCount: 1 }, // Asumiendo que solo se envía una imagen por vez
 ])
 
-router.post('/create', imagesCreate, verificarToken, createItem)
+// Ruta para crear un item
+router.post('/create', verificarToken, imagesUpload, createItem)
+
+// Ruta para eliminar un item
+router.delete('/:itemId', verificarToken, deleteItem)
+
+// Ruta para editar un item
+router.patch('/:itemId', verificarToken, imagesUpload, editItem)
+
+// Ruta para obtener un item por su ID
+router.get('/:itemId', verificarToken, getItem)
 
 export default router
